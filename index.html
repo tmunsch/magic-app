@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic: The Gathering Helper</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark-mode {
+            background-color: #333;
+            color: #f0f0f0;
+        }
+        body.light-mode {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .container {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+        .dark-mode .container {
+            background-color: #444;
+        }
+        .light-mode .container {
+            background-color: white;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .player {
+            position: absolute;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: move;
+            user-select: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            width: 200px;
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .dark-mode .player {
+            background-color: #555;
+            color: #f0f0f0;
+        }
+        .light-mode .player {
+            background-color: #fff;
+            color: #333;
+        }
+        .player-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .life-counter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .life-counter button {
+            font-size: 18px;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            margin: 0 5px;
+        }
+        .life-total {
+            font-size: 24px;
+            margin: 0 10px;
+        }
+        #playerForm {
+            margin-bottom: 20px;
+        }
+        #playerName {
+            padding: 5px;
+            font-size: 16px;
+        }
+        #addPlayer {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        #diceRoller {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: background-color 0.3s;
+        }
+        .dark-mode #diceRoller {
+            background-color: #444;
+        }
+        .light-mode #diceRoller {
+            background-color: white;
+        }
+        .dice-roll {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        #themeToggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+        #themeToggle:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+        .dark-mode #themeToggle {
+            color: white;
+        }
+        .light-mode #themeToggle {
+            color: black;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+    <button id="themeToggle"><i class="fas fa-sun"></i></button>
+    <div class="container">
+        <h1>Magic: The Gathering Helper</h1>
+        <div id="playerForm">
+            <input type="text" id="playerName" placeholder="Enter player name">
+            <button id="addPlayer">Add Player</button>
+        </div>
+    </div>
+
+    <div id="diceRoller">
+        <button onclick="rollDiceForAll(6)"><i class="fas fa-dice-six"></i> Roll D6 for All</button>
+        <button onclick="rollDiceForAll(20)"><i class="fas fa-dice-d20"></i> Roll D20 for All</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        let players = [];
+        let draggedElement = null;
+        let initialX, initialY, currentX, currentY, xOffset = 0, yOffset = 0;
+
+        document.getElementById('addPlayer').addEventListener('click', addPlayer);
+        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        document.getElementById('playerName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addPlayer();
+            }
+        });
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('light-mode');
+            const themeToggle = document.getElementById('themeToggle');
+            if (document.body.classList.contains('dark-mode')) {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        }
+
+        function addPlayer() {
+            const playerName = document.getElementById('playerName').value.trim();
+            if (playerName) {
+                const player = { name: playerName, life: 20, rotation: 0 };
+                players.push(player);
+                createPlayerElement(player);
+                document.getElementById('playerName').value = '';
+            }
+        }
+
+        function createPlayerElement(player) {
+            const playerElement = document.createElement('div');
+            playerElement.className = 'player';
+            playerElement.innerHTML = `
+                <div class="player-name">${player.name}</div>
+                <div class="life-counter">
+                    <button onclick="changeLife(${players.length - 1}, -1)">-</button>
+                    <span class="life-total">${player.life}</span>
+                    <button onclick="changeLife(${players.length - 1}, 1)">+</button>
+                </div>
+                <button onclick="rotatePlayer(${players.length - 1})">Rotate</button>
+                <div class="dice-roll"></div>
+            `;
+            document.body.appendChild(playerElement);
+
+            const playerWidth = 220; // Width of player element plus some margin
+            const bottomMargin = 20;
+            const leftMargin = 20;
+            const maxPlayersPerRow = Math.floor((window.innerWidth - leftMargin) / playerWidth);
+            const row = Math.floor((players.length - 1) / maxPlayersPerRow);
+            const col = (players.length - 1) % maxPlayersPerRow;
+
+            playerElement.style.left = `${leftMargin + col * playerWidth}px`;
+            playerElement.style.bottom = `${bottomMargin + row * (playerElement.offsetHeight + 10)}px`;
+
+            playerElement.addEventListener('mousedown', dragStart);
+            document.addEventListener('mouseup', dragEnd);
+            document.addEventListener('mousemove', drag);
+        }
+
+        function changeLife(playerIndex, amount) {
+            players[playerIndex].life += amount;
+            updatePlayerDisplay(playerIndex);
+        }
+
+        function updatePlayerDisplay(playerIndex) {
+            const playerElements = document.getElementsByClassName('player');
+            const lifeTotal = playerElements[playerIndex].querySelector('.life-total');
+            lifeTotal.textContent = players[playerIndex].life;
+        }
+
+        function rotatePlayer(playerIndex) {
+            players[playerIndex].rotation += 90;
+            if (players[playerIndex].rotation >= 360) {
+                players[playerIndex].rotation = 0;
+            }
+            const playerElements = document.getElementsByClassName('player');
+            playerElements[playerIndex].style.transform = `rotate(${players[playerIndex].rotation}deg)`;
+        }
+
+        function dragStart(e) {
+            if (e.target.closest('.player')) {
+                draggedElement = e.target.closest('.player');
+                initialX = e.clientX - draggedElement.offsetLeft;
+                initialY = e.clientY - draggedElement.offsetTop;
+            }
+        }
+
+        function dragEnd(e) {
+            draggedElement = null;
+        }
+
+        function drag(e) {
+            if (draggedElement) {
+                e.preventDefault();
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+
+                // Constrain the element within the viewport
+                currentX = Math.max(0, Math.min(currentX, window.innerWidth - draggedElement.offsetWidth));
+                currentY = Math.max(0, Math.min(currentY, window.innerHeight - draggedElement.offsetHeight));
+
+                setTranslate(currentX, currentY, draggedElement);
+            }
+        }
+
+        function setTranslate(xPos, yPos, el) {
+            el.style.left = `${xPos}px`;
+            el.style.top = `${yPos}px`;
+        }
+
+        function rollDiceForAll(sides) {
+            let results = [];
+            const playerElements = document.getElementsByClassName('player');
+
+            players.forEach((player, index) => {
+                const result = Math.floor(Math.random() * sides) + 1;
+                results.push(`${player.name} rolled a ${result}`);
+                playerElements[index].querySelector('.dice-roll').textContent = `Rolled: ${result}`;
+            });
+
+            document.getElementById('result').innerHTML = results.join('<br>');
+        }
+
+        // Prevent clipping on window resize
+        window.addEventListener('resize', function() {
+            const players = document.getElementsByClassName('player');
+            Array.from(players).forEach(player => {
+                let rect = player.getBoundingClientRect();
+                let newX = Math.min(rect.left, window.innerWidth - player.offsetWidth);
+                let newY = Math.min(rect.top, window.innerHeight - player.offsetHeight);
+                player.style.left = `${newX}px`;
+                player.style.top = `${newY}px`;
+            });
+        });
+    </script>
+</body>
+</html>
