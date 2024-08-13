@@ -136,6 +136,11 @@
         let isDarkMode = false;
 
         document.getElementById('addPlayer').addEventListener('click', addPlayer);
+        document.getElementById('playerName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addPlayer();
+            }
+        });
         document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
 
         function addPlayer() {
@@ -162,7 +167,7 @@
                 <div class="dice-roll"></div>
             `;
             playerElement.style.left = `${50 + players.length * 10}px`;
-            playerElement.style.top = `${50 + players.length * 10}px`;
+            playerElement.style.bottom = '20px';
             document.body.appendChild(playerElement);
 
             playerElement.addEventListener('mousedown', dragStart);
@@ -195,6 +200,7 @@
                 draggedElement = e.target.closest('.player');
                 initialX = e.clientX - draggedElement.offsetLeft;
                 initialY = e.clientY - draggedElement.offsetTop;
+                draggedElement.style.bottom = 'auto';
             }
         }
 
