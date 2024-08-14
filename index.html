@@ -14,11 +14,11 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            background-attachment: fixed; /* Added this line */
+            background-attachment: fixed;
             overflow: hidden;
             transition: background-color 0.3s, color 0.3s;
             text-align: center;
-            min-height: 100vh; /* Added this line */
+            min-height: 100vh;
         }
         body.dark-mode {
             background-color: rgba(51, 51, 51, 0.7);
@@ -178,6 +178,21 @@
             height: 100px;
             object-fit: cover;
         }
+        .confirm-change {
+            display: none;
+            margin-top: 10px;
+        }
+        .tally {
+            position: absolute;
+            bottom: 5px;
+            font-size: 12px;
+        }
+        .tally-minus {
+            left: 5px;
+        }
+        .tally-plus {
+            right: 5px;
+        }
     </style>
 </head>
 <body>
@@ -257,7 +272,7 @@
         function addPlayer() {
             const playerName = document.getElementById('playerName').value.trim();
             if (playerName) {
-                const player = { name: playerName, life: 20, rotation: 0 };
+                const player = { name: playerName, life: 20, tempLife: 20, rotation: 0, minusTally: 0, plusTally: 0 };
                 players.push(player);
                 createPlayerElement(player);
                 document.getElementById('playerName').value = '';
@@ -275,8 +290,13 @@
                     <span class="life-total">${player.life}</span>
                     <button onclick="changeLife(${players.length - 1}, 1)">+</button>
                 </div>
+                <div class="confirm-change">
+                    <button onclick="applyLifeChange(${players.length - 1})">Apply</button>
+                </div>
                 <button onclick="rotatePlayer(${players.length - 1})">Rotate</button>
                 <div class="dice-roll"></div>
+                <div class="tally tally-minus">-: 0</div>
+                <div class="tally tally-plus">+: 0</div>
             `;
             
             const existingPlayers = document.getElementsByClassName('player');
@@ -293,6 +313,39 @@
             playerElement.addEventListener('mousedown', dragStart);
             document.addEventListener('mouseup', dragEnd);
             document.addEventListener('mousemove', drag);
+        }
+
+        function changeLife(playerIndex, amount) {
+            players[playerIndex].tempLife += amount;
+            updatePlayerDisplay(playerIndex);
+            const playerElement = document.getElementsByClassName('player')[playerIndex];
+            const confirmDiv = playerElement.querySelector('.confirm-change');
+            confirmDiv.style.display = 'block';
+        }
+
+        function applyLifeChange(playerIndex) {
+            const player = players[playerIndex];
+            const lifeDifference = player.tempLife - player.life;
+            player.life = player.tempLife;
+            
+            if (lifeDifference < 0) {
+                player.minusTally += Math.abs(lifeDifference);
+            } else if (lifeDifference > 0) {
+                player.plusTally += lifeDifference;
+            }
+
+            updatePlayerDisplay(playerIndex);
+            updateTallyDisplay(playerIndex);
+
+            const playerElement = document.getElementsByClassName('player')[playerIndex];
+            const confirmDiv = playerElement.querySelector('.confirm-change');
+            confirmDiv.style.display = 'none';
+        }
+
+        function updateTallyDisplay(playerIndex) {
+            const playerElement = document.getElementsByClassName('player')[playerIndex];
+            playerElement.querySelector('.tally-minus').textContent = `-: ${players[playerIndex].minusTally}`;
+            playerElement.querySelector('.tally-plus').textContent = `+: ${players[playerIndex].plusTally}`;
         }
 
         function removePlayer(button) {
@@ -312,15 +365,10 @@
             });
         }
 
-        function changeLife(playerIndex, amount) {
-            players[playerIndex].life += amount;
-            updatePlayerDisplay(playerIndex);
-        }
-
         function updatePlayerDisplay(playerIndex) {
             const playerElements = document.getElementsByClassName('player');
             const lifeTotal = playerElements[playerIndex].querySelector('.life-total');
-            lifeTotal.textContent = players[playerIndex].life;
+            lifeTotal.textContent = players[playerIndex].tempLife;
         }
 
         function rotatePlayer(playerIndex) {
