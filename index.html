@@ -149,26 +149,36 @@
             right: 70px;
         }
         .dark-mode .remove-player {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: none;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            color: white;
-            padding: 5px;
+            color: #ffffff;
+            background-color: #000000;
+            border: 2px solid #ffffff;
         }
         .remove-player {
             position: absolute;
             top: 5px;
             right: 5px;
-            background: none;
-            border: none;
-            font-size: 18px;
+            color: #000000;
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #ffffff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            color: black;
-            padding: 5px;
+            border: 2px solid #000000;
+        }
+        .remove-player:hover,
+        .remove-player:focus {
+            background-color: #e6e6e6;
+            text-decoration: none;
+        }
+        .dark-mode .remove-player:hover,
+        .dark-mode .remove-player:focus {
+            background-color: #333333;
         }
         #backgroundModal {
             display: none;
@@ -350,7 +360,7 @@
             const playerElement = document.createElement('div');
             playerElement.className = 'player';
             playerElement.innerHTML = `
-                <button class="remove-player" onclick="removePlayer(this)">×</button>
+                <button class="remove-player" onclick="removePlayer(this)">&times;</button>
                 <div class="player-name">${player.name}</div>
                 <div class="life-counter">
                     <button onclick="changeLife(${players.length - 1}, -1)">-</button>
