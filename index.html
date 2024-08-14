@@ -148,6 +148,17 @@
         #backgroundToggle {
             right: 70px;
         }
+        .dark-mode .remove-player {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: white;
+            padding: 5px;
+        }
         .remove-player {
             position: absolute;
             top: 5px;
@@ -156,7 +167,7 @@
             border: none;
             font-size: 18px;
             cursor: pointer;
-            color: #FF3B30;
+            color: black;
             padding: 5px;
         }
         #backgroundModal {
@@ -180,11 +191,11 @@
             max-width: 500px;
         }
         .close {
-            color: #ffffff;
+            color: #000000;
             float: right;
             font-size: 24px;
             font-weight: bold;
-            background-color: #007AFF;
+            background-color: #ffffff;
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -192,11 +203,21 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            border: 2px solid #000000;
+        }
+        .dark-mode .close {
+            color: #ffffff;
+            background-color: #000000;
+            border: 2px solid #ffffff;
         }
         .close:hover,
         .close:focus {
-            background-color: #0056b3;
+            background-color: #e6e6e6;
             text-decoration: none;
+        }
+        .dark-mode .close:hover,
+        .dark-mode .close:focus {
+            background-color: #333333;
         }
         .background-option {
             display: inline-block;
