@@ -112,14 +112,19 @@
             font-size: 18px;
             margin-top: 10px;
         }
-        #darkModeToggle {
+        #darkModeToggle, #backgroundToggle {
             position: absolute;
             top: 10px;
-            right: 10px;
             background: none;
             border: none;
             font-size: 24px;
             cursor: pointer;
+        }
+        #darkModeToggle {
+            right: 10px;
+        }
+        #backgroundToggle {
+            right: 50px;
         }
         .remove-player {
             position: absolute;
@@ -132,18 +137,52 @@
             color: #000;
             padding: 5px;
         }
-        #backgroundUpload {
-            margin-bottom: 10px;
+        #backgroundModal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .background-option {
+            display: inline-block;
+            margin: 10px;
+            cursor: pointer;
+        }
+        .background-option img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Magic: The Gathering Helper</h1>
-        <div id="backgroundUpload">
-            <input type="file" id="imageUpload" accept="image/*">
-            <button onclick="uploadBackground()">Upload Background</button>
-        </div>
         <div id="playerForm">
             <input type="text" id="playerName" placeholder="Enter player name">
             <button id="addPlayer">Add Player</button>
@@ -156,7 +195,31 @@
         <button onclick="rollDiceForAll(20)"><i class="fas fa-dice-d20"></i> Roll D20 for All</button>
     </div>
 
+    <button id="backgroundToggle"><i class="fas fa-image"></i></button>
     <button id="darkModeToggle"><i class="fas fa-moon"></i></button>
+
+    <div id="backgroundModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Choose a background</h2>
+            <div class="background-option" onclick="setBackground('background1.jpg')">
+                <img src="background1.jpg" alt="Background 1">
+            </div>
+            <div class="background-option" onclick="setBackground('background2.jpg')">
+                <img src="background2.jpg" alt="Background 2">
+            </div>
+            <div class="background-option" onclick="setBackground('background3.jpg')">
+                <img src="background3.jpg" alt="Background 3">
+            </div>
+            <div class="background-option" onclick="setBackground('background4.jpg')">
+                <img src="background4.jpg" alt="Background 4">
+            </div>
+            <div>
+                <input type="file" id="imageUpload" accept="image/*">
+                <button onclick="uploadBackground()">Upload Custom Background</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         let players = [];
@@ -171,6 +234,25 @@
             }
         });
         document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
+        document.getElementById('backgroundToggle').addEventListener('click', toggleBackgroundModal);
+
+        // Get the modal
+        var modal = document.getElementById("backgroundModal");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
 
         function addPlayer() {
             const playerName = document.getElementById('playerName').value.trim();
@@ -346,6 +428,10 @@
                 icon.classList.remove('fa-sun');
                 icon.classList.add('fa-moon');
             }
+        }
+
+        function toggleBackgroundModal() {
+            modal.style.display = "block";
         }
 
         function uploadBackground() {
