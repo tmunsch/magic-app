@@ -182,19 +182,30 @@
             display: none;
             margin-top: 10px;
         }
+        .tally-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
         .tally {
-            position: absolute;
-            bottom: 5px;
-            font-size: 12px;
-        }
-        .tally-minus {
-            left: 5px;
-        }
-        .tally-plus {
-            right: 5px;
+            font-size: 16px;
         }
         .tally i {
             margin-right: 3px;
+        }
+        .rotate-button {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
         }
     </style>
 </head>
@@ -296,10 +307,12 @@
                 <div class="confirm-change">
                     <button onclick="applyLifeChange(${players.length - 1})">Apply</button>
                 </div>
-                <button onclick="rotatePlayer(${players.length - 1})">Rotate</button>
                 <div class="dice-roll"></div>
-                <div class="tally tally-minus"><i class="fas fa-skull"></i>- 0</div>
-                <div class="tally tally-plus"><i class="fas fa-heart"></i>+ 0</div>
+                <div class="tally-container">
+                    <div class="tally tally-minus"><i class="fas fa-skull"></i>- 0</div>
+                    <button class="rotate-button" onclick="rotatePlayer(${players.length - 1})"><i class="fas fa-redo"></i></button>
+                    <div class="tally tally-plus"><i class="fas fa-heart"></i>+ 0</div>
+                </div>
             `;
             
             const existingPlayers = document.getElementsByClassName('player');
