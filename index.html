@@ -193,6 +193,9 @@
         .tally-plus {
             right: 5px;
         }
+        .tally i {
+            margin-right: 3px;
+        }
     </style>
 </head>
 <body>
@@ -295,8 +298,8 @@
                 </div>
                 <button onclick="rotatePlayer(${players.length - 1})">Rotate</button>
                 <div class="dice-roll"></div>
-                <div class="tally tally-minus">-: 0</div>
-                <div class="tally tally-plus">+: 0</div>
+                <div class="tally tally-minus"><i class="fas fa-skull"></i>- 0</div>
+                <div class="tally tally-plus"><i class="fas fa-heart"></i>+ 0</div>
             `;
             
             const existingPlayers = document.getElementsByClassName('player');
@@ -344,8 +347,8 @@
 
         function updateTallyDisplay(playerIndex) {
             const playerElement = document.getElementsByClassName('player')[playerIndex];
-            playerElement.querySelector('.tally-minus').textContent = `-: ${players[playerIndex].minusTally}`;
-            playerElement.querySelector('.tally-plus').textContent = `+: ${players[playerIndex].plusTally}`;
+            playerElement.querySelector('.tally-minus').innerHTML = `<i class="fas fa-skull"></i>- ${players[playerIndex].minusTally}`;
+            playerElement.querySelector('.tally-plus').innerHTML = `<i class="fas fa-heart"></i>+ ${players[playerIndex].plusTally}`;
         }
 
         function removePlayer(button) {
