@@ -296,8 +296,8 @@
                 <img src="background4.jpg" alt="Background 4">
             </div>
             <div>
-                <input type="file" id="imageUpload" accept="image/*">
-                <button onclick="uploadBackground()">Upload Custom Background</button>
+                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                <button onclick="document.getElementById('imageUpload').click()"><i class="fas fa-upload"></i></button>
             </div>
         </div>
     </div>
@@ -316,6 +316,7 @@
         });
         document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
         document.getElementById('backgroundToggle').addEventListener('click', toggleBackgroundModal);
+        document.getElementById('imageUpload').addEventListener('change', uploadBackground);
 
         // Get the modal
         var modal = document.getElementById("backgroundModal");
