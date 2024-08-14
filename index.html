@@ -31,6 +31,9 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             margin-bottom: 20px;
             transition: background-color 0.3s, color 0.3s;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
         .dark-mode .container {
             background-color: rgba(28, 28, 30, 0.8);
@@ -97,6 +100,9 @@
         }
         #playerForm {
             margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
         }
         #playerName {
             padding: 10px;
@@ -104,6 +110,8 @@
             border-radius: 10px;
             border: 1px solid #007AFF;
             margin-right: 10px;
+            flex-grow: 1;
+            max-width: 300px;
         }
         #addPlayer {
             background-color: #34C759;
@@ -125,8 +133,8 @@
         #diceRoller {
             position: fixed;
             left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
+            bottom: 20px;
+            transform: translateX(-50%);
             text-align: center;
         }
         .dice-roll {
@@ -134,7 +142,7 @@
             margin-top: 10px;
         }
         #darkModeToggle, #backgroundToggle {
-            position: absolute;
+            position: fixed;
             top: 10px;
             background: none;
             border: none;
@@ -270,6 +278,49 @@
             justify-content: center;
             margin: 0 auto;
         }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .player {
+                width: 180px;
+            }
+            .life-counter button {
+                width: 30px;
+                height: 30px;
+            }
+            .life-total {
+                font-size: 24px;
+            }
+            #darkModeToggle, #backgroundToggle {
+                top: 5px;
+            }
+            #backgroundToggle {
+                right: 50px;
+            }
+        }
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 5px;
+            }
+            .player {
+                width: 150px;
+            }
+            .life-counter button {
+                width: 25px;
+                height: 25px;
+                font-size: 14px;
+            }
+            .life-total {
+                font-size: 20px;
+            }
+            #playerName {
+                max-width: 200px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -391,8 +442,11 @@
             document.body.appendChild(playerElement);
 
             playerElement.addEventListener('mousedown', dragStart);
+            playerElement.addEventListener('touchstart', dragStart);
             document.addEventListener('mouseup', dragEnd);
+            document.addEventListener('touchend', dragEnd);
             document.addEventListener('mousemove', drag);
+            document.addEventListener('touchmove', drag);
         }
 
         function changeLife(playerIndex, amount) {
