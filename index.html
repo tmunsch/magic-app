@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magic: The Gathering Helper</title>
+    <title>Arcane Abacus</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
     <style>
         body {
@@ -180,16 +180,23 @@
             max-width: 500px;
         }
         .close {
-            color: #8E8E93;
+            color: #ffffff;
             float: right;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
+            background-color: #007AFF;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
         }
         .close:hover,
         .close:focus {
-            color: #000000;
+            background-color: #0056b3;
             text-decoration: none;
-            cursor: pointer;
         }
         .background-option {
             display: inline-block;
@@ -235,7 +242,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Magic: The Gathering Helper</h1>
+        <h1>Arcane Abacus</h1>
         <div id="playerForm">
             <input type="text" id="playerName" placeholder="Enter player name">
             <button id="addPlayer"><i class="fas fa-plus"></i></button>
